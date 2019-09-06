@@ -96,7 +96,7 @@ def get_today_weather():
     data.set_temperature(__get_list_of_temperature(widget))
     data.set_times(__get_list_of_time(widget))
     data.set_precipitation(__get_widget_precipitation(widget))
-    print(data)
+    return data
 
 
 def get_tomorrow_weather():
@@ -108,10 +108,4 @@ def get_tomorrow_weather():
     data.set_temperature(__get_list_of_temperature(widget))
     data.set_times(__get_list_of_time(widget))
     data.set_precipitation(__get_widget_precipitation(widget))
-    print(data)
-
-
-print('today')
-get_today_weather()
-print('tomorrow')
-get_tomorrow_weather()
+    return data

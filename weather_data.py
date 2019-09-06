@@ -16,13 +16,13 @@ class WeatherData:
             self.__precipitation = data
 
     def get_times(self):
-        return self.__times
+        return list(map(int, self.__times))
 
     def get_temperature(self):
-        return self.__temperature
+        return list(map(int, self.__temperature))
 
     def get_precipitation(self):
-        return self.__precipitation
+        return list(map(float, self.__precipitation))
 
     def is_valid(self):
         return (len(self.__times) == len(self.__precipitation)) & (len(self.__times) == len(self.__temperature))
