@@ -1,6 +1,7 @@
 import argparse
 import os
 import telebot
+import main_api
 
 from telebot import types
 from flask import Flask, request
@@ -28,7 +29,12 @@ def send_welcome(message):
 
 @bot.message_handler(regexp=text_weather)
 def send_weather(message):
-    response = 'Хочешь погоду???'
+    path = main_api.current_path();
+    if not main_api.has_current_day_graph(path):
+        main_api.save_graphics_two_day(path)
+    file = open(path, 'rb')
+    bot.send_photo(message.chat.id, file)
+    response = 'Будут еще пожелания, мой Господин?'
     bot.send_message(message.chat.id, text=response, reply_markup=keyboard)
 
 

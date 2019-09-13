@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import parser_weather_gis
 import render_graphics
 import os
@@ -24,12 +26,12 @@ def has_current_day_graph(file_path):
     return os.path.exists(file_path)
 
 
+def current_path():
+    return str(datetime.now().date()) + '.png'
+
+
 def __add_next_day_times(array):
     out = []
     for t in array:
         out.append(t + 24)
     return out
-
-
-save_graphics_two_day('test_png//two_day.png')
-print(has_current_day_graph('test_png//two_day.png'))
