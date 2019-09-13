@@ -38,7 +38,7 @@ def send_for_signer():
         bot.send_photo(chat_id, file)
 
 
-schedule.every(1).minutes.do(send_for_signer)
+schedule.every().day.at("8:00").do(send_for_signer)
 
 
 def thread_sign():
@@ -53,7 +53,7 @@ t.start()
 
 @bot.message_handler(commands=['help', 'start'])
 def send_welcome(message):
-    response = 'Привет, можешь получить погоду на два дня, либо подписаться на получение в 8 утра.'
+    response = 'Привет, можешь получить погоду в Москве на два дня, либо подписаться на получение в 8 утра.'
     bot.send_message(message.chat.id, text=response, reply_markup=keyboard)
 
 
@@ -64,17 +64,17 @@ def send_weather(message):
         main_api.save_graphics_two_day(path)
     file = open(path, 'rb')
     bot.send_photo(message.chat.id, file)
-    response = 'Будут еще пожелания, мой Господин?'
+    response = 'Будут еще пожелания?'
     bot.send_message(message.chat.id, text=response, reply_markup=keyboard)
 
 
 @bot.message_handler(regexp=text_sign)
 def send_sign(message):
     if message.chat.id in current_sings:
-        response = 'Вы уже подписаны \U0001F614'
+        response = 'Вы уже подписаны \U0001F602'
     else:
         current_sings.append(message.chat.id)
-        response = 'Вы успешно подписались'
+        response = 'Вы успешно подписались \U0000270C'
     bot.send_message(message.chat.id, text=response, reply_markup=keyboard)
 
 
@@ -84,19 +84,19 @@ def send_sign(message):
         current_sings.remove(message.chat.id)
         response = 'Вы успешно отписались \U0001F614'
     else:
-        response = 'А Вы и не подписаны'
+        response = 'А Вы и не подписаны \U0001F639'
     bot.send_message(message.chat.id, text=response, reply_markup=keyboard)
 
 
 @bot.message_handler(func=lambda message: True)
 def echo_message(message):
-    bot.reply_to(message, 'Чё-то я не понял')
+    bot.reply_to(message, 'Я знаю только о погоде \U00002600 \U00002601')
 
 
 # Handle all other messages with content_type 'text' (content_types defaults to ['text'])
 @bot.message_handler(func=lambda message: True)
 def echo_message(message):
-    bot.reply_to(message, 'Чё-то я не понял')
+    bot.reply_to(message, 'Я знаю только о погоде \U00002600 \U00002601')
 
 
 @server.route('/' + TELEBOT_URL + API_TOKEN, methods=['POST'])
