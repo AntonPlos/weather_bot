@@ -1,5 +1,6 @@
 import argparse
 import os
+import threading
 import time
 
 import telebot
@@ -26,6 +27,28 @@ button_remove_sign = types.KeyboardButton(text=text_remove_sign)
 keyboard.add(button_weather, button_sign, button_remove_sign)
 
 current_sings = []
+
+
+def send_for_signer():
+    for chat_id in current_sings:
+        path = main_api.current_path();
+        if not main_api.has_current_day_graph(path):
+            main_api.save_graphics_two_day(path)
+        file = open(path, 'rb')
+        bot.send_photo(chat_id, file)
+
+
+schedule.every(1).minutes.do(send_for_signer)
+
+
+def thread_sign():
+    while 1:
+        schedule.run_pending()
+        time.sleep(1)
+
+
+t = threading.Thread(target=thread_sign, name="Подписчики")
+t.start()
 
 
 @bot.message_handler(commands=['help', 'start'])
@@ -100,21 +123,6 @@ else:
     # webhook should be set first
     webhook()
     server.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
-
-
-def send_for_signer():
-    for chat_id in current_sings:
-        path = main_api.current_path();
-        if not main_api.has_current_day_graph(path):
-            main_api.save_graphics_two_day(path)
-        file = open(path, 'rb')
-        bot.send_photo(chat_id, file)
-
-
-schedule.every().minute.do(send_for_signer)
-while True:
-    schedule.run_pending()
-    time.sleep(1)
 
 
 
