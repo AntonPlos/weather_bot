@@ -1,7 +1,10 @@
 import argparse
 import os
+import time
+
 import telebot
 import main_api
+import schedule
 
 from telebot import types
 from flask import Flask, request
@@ -16,9 +19,13 @@ BASE_URL = 'https://weather-bot-tony.herokuapp.com/'
 keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
 text_weather = '1️⃣Получить погоду'
 text_sign = '2️⃣Подписаться'
+text_remove_sign = '3️⃣Отписаться'
 button_weather = types.KeyboardButton(text=text_weather)
 button_sign = types.KeyboardButton(text=text_sign)
-keyboard.add(button_weather, button_sign)
+button_remove_sign = types.KeyboardButton(text=text_remove_sign)
+keyboard.add(button_weather, button_sign, button_remove_sign)
+
+current_sings = []
 
 
 @bot.message_handler(commands=['help', 'start'])
@@ -40,7 +47,21 @@ def send_weather(message):
 
 @bot.message_handler(regexp=text_sign)
 def send_sign(message):
-    response = 'Пока нельзя подписаться \U0001F614'
+    if message.chat.id in current_sings:
+        response = 'Вы уже подписаны \U0001F614'
+    else:
+        current_sings.append(message.chat.id)
+        response = 'Вы успешно подписались'
+    bot.send_message(message.chat.id, text=response, reply_markup=keyboard)
+
+
+@bot.message_handler(regexp=text_remove_sign)
+def send_sign(message):
+    if message.chat.id in current_sings:
+        current_sings.remove(message.chat.id)
+        response = 'Вы успешно отписались \U0001F614'
+    else:
+        response = 'А Вы и не подписаны'
     bot.send_message(message.chat.id, text=response, reply_markup=keyboard)
 
 
@@ -79,6 +100,21 @@ else:
     # webhook should be set first
     webhook()
     server.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
+
+
+def send_for_signer():
+    for chat_id in current_sings:
+        path = main_api.current_path();
+        if not main_api.has_current_day_graph(path):
+            main_api.save_graphics_two_day(path)
+        file = open(path, 'rb')
+        bot.send_photo(chat_id, file)
+
+
+schedule.every().minute.do(send_for_signer)
+while True:
+    schedule.run_pending()
+    time.sleep(1)
 
 
 
