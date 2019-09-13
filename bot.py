@@ -23,19 +23,19 @@ def send_welcome(message):
     button_phone = types.KeyboardButton(text=text_weather)
     button_geo = types.KeyboardButton(text=text_sign)
     keyboard.add(button_phone, button_geo)
-    bot.send_message(response, reply_markup=keyboard)
+    bot.send_message(text=response, reply_markup=keyboard)
 
 
 @bot.message_handler(regexp=text_weather)
 def send_weather(message):
     response = 'Хочешь погоду???'
-    bot.send_message(response, reply_markup=keyboard)
+    bot.send_message(text=response, reply_markup=keyboard)
 
 
 @bot.message_handler(regexp=text_sign)
 def send_sign(message):
     response = 'Пока нельзя подписаться \U0001F614'
-    bot.send_message(response, reply_markup=keyboard)
+    bot.send_message(text=response, reply_markup=keyboard)
 
 
 @bot.message_handler(func=lambda message: True)
