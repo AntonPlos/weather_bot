@@ -16,14 +16,14 @@ BASE_URL = 'https://weather-bot-tony.herokuapp.com/'
 keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
 text_weather = '1️⃣Получить погоду'
 text_sign = '2️⃣Подписаться'
+button_weather = types.KeyboardButton(text=text_weather)
+button_sign = types.KeyboardButton(text=text_sign)
+keyboard.add(button_weather, button_sign)
 
 
 @bot.message_handler(commands=['help', 'start'])
 def send_welcome(message):
     response = 'Привет, можешь получить погоду на два дня, либо подписаться на получение в 8 утра.'
-    button_phone = types.KeyboardButton(text=text_weather)
-    button_geo = types.KeyboardButton(text=text_sign)
-    keyboard.add(button_phone, button_geo)
     bot.send_message(message.chat.id, text=response, reply_markup=keyboard)
 
 
