@@ -1,0 +1,4 @@
+pytelegrambotapi
+matplotlib
+scipy
+numpy
