@@ -38,7 +38,7 @@ def send_for_signer():
         bot.send_photo(chat_id, file)
 
 
-schedule.every().day.at("8:00").do(send_for_signer)
+schedule.every().day.at("08:00").do(send_for_signer)
 
 
 def thread_sign():
